@@ -1,0 +1,14 @@
+spring:
+  data:
+    mongodb:
+        uri: mongodb://root:devpassword@localhost:27018/testdb?authSource=admin
+      
+logging:
+  level:
+    '[org.springframework.data.mongodb]': INFO
+    '[reactor.netty]': INFO
+      
+aurasage:
+  database:
+    type: mongodb
+#    type: dynamodb --- IGNORE ---

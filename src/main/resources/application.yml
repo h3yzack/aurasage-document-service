@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: aurasage-document-service
+
+  data:
+    mongodb:
+        uri: mongodb://root:devpassword@localhost:27018/aurasage?authSource=admin
+    # dynamodb:
+    #     endpoint: http://localhost:8000
+    #     region: us-west-2
+
+aurasage:
+  database:
+    type: mongodb # dynamodb (default mongodb)
+
+
+logging:
+  level:
+    '[org.springframework.data.mongodb]': INFO
+    '[reactor.netty]': INFO
