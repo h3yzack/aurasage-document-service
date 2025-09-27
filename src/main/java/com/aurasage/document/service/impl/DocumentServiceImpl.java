@@ -9,6 +9,9 @@ import com.aurasage.document.model.entity.AsDocument;
 import com.aurasage.document.model.enums.DocumentStatus;
 import com.aurasage.document.repository.DocumentRepository;
 import com.aurasage.document.service.DocumentService;
+
+import io.micrometer.observation.annotation.Observed;
+
 import com.aurasage.document.mapper.DocumentMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +31,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    @Observed(name = "document.uploadDocument", contextualName = "document-upload")
     public Mono<DocumentUploadResponse> uploadDocument(DocumentRequest documentRequest, String userId) {
         if (userId == null || userId.trim().isEmpty()) {
             return Mono.error(new IllegalArgumentException("User ID cannot be null or empty"));
@@ -55,6 +59,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    @Observed(name = "document.getDocuments", contextualName = "get-documents")
     public Flux<DocumentResponse> getDocuments(String userId) {
         if (userId == null || userId.trim().isEmpty()) {
             return Flux.error(new IllegalArgumentException("User ID cannot be null or empty"));
@@ -66,6 +71,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    @Observed(name = "document.getDocumentById", contextualName = "get-document-by-id")
     public Mono<DocumentResponse> getDocumentById(String documentId) { 
         return documentRepository.findById(documentId)
             .map(documentMapper::toResponse)
@@ -73,6 +79,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    @Observed(name = "document.deleteDocument", contextualName = "delete-document")
     public Mono<Void> deleteDocument(String documentId) { 
         if (documentId == null || documentId.trim().isEmpty()) {
             return Mono.error(new IllegalArgumentException("Document ID cannot be null or empty"));

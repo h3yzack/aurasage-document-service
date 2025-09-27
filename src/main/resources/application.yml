@@ -14,7 +14,7 @@ aurasage:
     type: mongodb # dynamodb (default mongodb)
   observability:
     enabled: true # Set to false to disable all observability features
-    stack: opensource # Options: opensource, aws
+    stack: local # Options: local, aws
 
 
 # OpenAPI & Swagger
@@ -25,3 +25,24 @@ springdoc:
       enabled: true
     swagger-ui:
       enabled: true
+
+management:
+  tracing:
+    enabled: true
+    propagation:
+      type:
+      - W3C
+    baggage:
+      enabled: true
+    sampling:
+      probability: ${TRACING_SAMPLING_PROBABILITY:1.0}
+#   zipkin:
+#     tracing:
+#       endpoint: ${ZIPKIN_ENDPOINT:http://localhost:9411/api/v2/spans}
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics,httptrace
+  metrics:
+    tags:
+      application: ${spring.application.name}

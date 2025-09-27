@@ -7,6 +7,7 @@ import com.aurasage.document.model.dto.DocumentRequest;
 import com.aurasage.document.model.dto.DocumentResponse;
 import com.aurasage.document.service.DocumentService;
 
+import io.micrometer.observation.annotation.Observed;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ public class DocumentController implements DocumentApi {
 
     @Override
     @PostMapping("/init-upload")
+    @Observed(name = "documentController.initUpload", contextualName = "document-init-upload")
     public Mono<ResponseEntity<?>> initUpload(@RequestBody @NotNull DocumentRequest documentRequest,
             Authentication authentication) {
         if (authentication == null || authentication.getName() == null) {
@@ -51,6 +53,7 @@ public class DocumentController implements DocumentApi {
 
     @Override
     @GetMapping
+    @Observed(name = "documentController.getDocuments", contextualName = "document-get-documents")
     public Mono<ResponseEntity<List<?>>> getDocuments(Authentication authentication) {
         if (authentication == null || authentication.getName() == null) {
             log.warn("Unauthorized access attempt - missing or invalid authentication");
@@ -65,7 +68,9 @@ public class DocumentController implements DocumentApi {
 
     @Override
     @GetMapping("/{id}")
+    @Observed(name = "documentController.getDocumentById", contextualName = "document-get-by-id")
     public Mono<ResponseEntity<DocumentResponse>> getDocumentById(@PathVariable @NotBlank String id) {
+        log.info("Fetching document by ID: {}", id);
         return documentService.getDocumentById(id)
             .map(document -> ResponseEntity.ok(document))
             .switchIfEmpty(Mono.error(new IllegalArgumentException("Document not found with id: " + id)));
@@ -73,6 +78,7 @@ public class DocumentController implements DocumentApi {
 
     @Override
     @DeleteMapping("/{id}")
+    @Observed(name = "documentController.deleteDocument", contextualName = "document-delete")
     public Mono<ResponseEntity<Void>> deleteDocument(@PathVariable @NotBlank String id) {
         return documentService.deleteDocument(id)
             .then(Mono.just(ResponseEntity.noContent().<Void>build()));

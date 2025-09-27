@@ -29,6 +29,7 @@ public class MongoDocumentRepository implements DocumentRepository {
 
     @Override
     public Mono<AsDocument> findById(String id) {
+        log.info("Finding document by ID in MongoDB: {}", id);
         return mongoRepository.findById(id);
     }
 
