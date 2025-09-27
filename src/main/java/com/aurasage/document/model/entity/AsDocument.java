@@ -1,11 +1,14 @@
-package com.aurasage.document.entity;
+package com.aurasage.document.model.entity;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+
+import com.aurasage.document.model.enums.DocumentStatus;
 
 import lombok.Data;
 import lombok.Builder;
@@ -25,8 +28,8 @@ public class AsDocument {
     @Field("storage_location")
     private String storageLocation;
 
-    @Field("mime_type")
-    private String mimeType;
+    @Field("content_type")
+    private String contentType;
 
     @Field("size_in_bytes")
     private Long sizeInBytes;
@@ -39,12 +42,12 @@ public class AsDocument {
     private LocalDateTime uploadDate;
 
     @Field("tags")
-    private String tags;
+    private Set<String> tags;
 
     @Field("file_hash")
     private String fileHash;
 
     @Field("doc_status")
-    private String status;
+    private DocumentStatus status;
 
 }

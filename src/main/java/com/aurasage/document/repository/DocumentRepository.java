@@ -1,6 +1,6 @@
 package com.aurasage.document.repository;
 
-import com.aurasage.document.entity.AsDocument;
+import com.aurasage.document.model.entity.AsDocument;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
