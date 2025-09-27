@@ -12,9 +12,16 @@ spring:
 aurasage:
   database:
     type: mongodb # dynamodb (default mongodb)
+  observability:
+    enabled: true # Set to false to disable all observability features
+    stack: opensource # Options: opensource, aws
 
 
-logging:
-  level:
-    '[org.springframework.data.mongodb]': INFO
-    '[reactor.netty]': INFO
+# OpenAPI & Swagger
+# Access the Swagger UI at http://localhost:8080/swagger-ui.html
+springdoc:
+    api-docs:
+      path: /v1/api-docs
+      enabled: true
+    swagger-ui:
+      enabled: true
