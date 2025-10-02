@@ -1,1 +1,5 @@
 rootProject.name = 'aurasage-document-service'
+
+// includeBuild('../aurasage-core')
+includeBuild('../aurasage-document-mongodb-adapter') 
+includeBuild('../aurasage-prometheus-observer') 
