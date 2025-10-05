@@ -10,10 +10,7 @@ import io.aurasage.core.storage.model.StorageRequest;
 import io.aurasage.document.config.FeignClientConfig;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
-@FeignClient(
-    name = "aurasage-storage-service", 
-    url = "${aurasage.client.storage-service.url}",
-    configuration = FeignClientConfig.class)
+@FeignClient(name = "aurasage-storage-service", configuration = FeignClientConfig.class)
 public interface StorageServiceClient {
 
     @PostMapping("/storage/upload-url")
@@ -24,5 +21,5 @@ public interface StorageServiceClient {
 
     @GetMapping("/storage/download-url")
     String generateDownloadUrl(@RequestParam String objectKey);
-    
+
 }
