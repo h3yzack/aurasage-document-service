@@ -8,6 +8,7 @@ import io.aurasage.document.dto.DocumentRequest;
 import io.aurasage.document.dto.DocumentResponse;
 import io.aurasage.document.service.DocumentService;
 import io.micrometer.observation.annotation.Observed;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
 
 @Slf4j
 @RestController
@@ -70,7 +70,7 @@ public class DocumentController implements DocumentApi {
     @Override
     @GetMapping("/{id}")
     @Observed(name = "documentController.getDocumentById", contextualName = "document-get-by-id")
-    public Mono<ResponseEntity<DocumentResponse>> getDocumentById(@PathVariable @NotBlank String id) {
+    public Mono<ResponseEntity<DocumentResponse>> getDocumentById(@PathVariable(name = "id") @NotBlank String id) {
         log.info("Fetching document by ID: {}", id);
         return documentService.getDocumentById(id)
             .map(document -> ResponseEntity.ok(document))
@@ -80,7 +80,7 @@ public class DocumentController implements DocumentApi {
     @Override
     @DeleteMapping("/{id}")
     @Observed(name = "documentController.deleteDocument", contextualName = "document-delete")
-    public Mono<ResponseEntity<Void>> deleteDocument(@PathVariable @NotBlank String id) {
+    public Mono<ResponseEntity<Void>> deleteDocument(@PathVariable(name = "id") @NotBlank String id) {
         return documentService.deleteDocument(id)
             .then(Mono.just(ResponseEntity.noContent().<Void>build()));
     }
@@ -93,7 +93,7 @@ public class DocumentController implements DocumentApi {
 
     @Override
     @GetMapping("/download/{id}")
-    public Mono<ResponseEntity<?>> downloadDocument(@PathVariable @NotBlank String id, Authentication authentication) {
+    public Mono<ResponseEntity<?>> downloadDocument(@PathVariable(name = "id") @NotBlank String id, Authentication authentication) {
         if (authentication == null || authentication.getName() == null) {
             log.warn("Unauthorized access attempt - missing or invalid authentication");
             return Mono.error(new SecurityException("Authentication required"));

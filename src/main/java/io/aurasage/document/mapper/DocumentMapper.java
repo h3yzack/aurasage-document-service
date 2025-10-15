@@ -1,43 +1,32 @@
 package io.aurasage.document.mapper;
 
-import java.time.ZoneOffset;
-
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import io.aurasage.core.document.model.entity.AsDocument;
 import io.aurasage.document.dto.DocumentResponse;
 import io.aurasage.document.dto.DocumentUrlResponse;
 
-@Component
-public class DocumentMapper {
+@Mapper(componentModel = "spring")
+public abstract class DocumentMapper {
 
-    public DocumentResponse toResponse(AsDocument document) {
-        if (document == null) {
-            return null;
-        }
 
-        return DocumentResponse.builder()
-            .id(document.getId())
-            .fileName(document.getFileName())
-            .sizeInBytes(document.getSizeInBytes())
-            .mimeType(document.getContentType())
-            .uploadDate(document.getUploadDate().atOffset(ZoneOffset.UTC).toInstant())
-            .fileHash(document.getFileHash())
-            .status(document.getStatus().name())
-            .ownerId(document.getOwnerId())
-            .filePath(document.getFilePath())
-            .build();
-    }
+    @Mapping(target = "mimeType", source = "contentType")
+    @Mapping(target = "uploadDate", expression = "java(document.getUploadDate() != null ? document.getUploadDate().atOffset(java.time.ZoneOffset.UTC).toInstant() : null)")
+    @Mapping(target = "status", expression = "java(document.getStatus() != null ? document.getStatus().name() : null)")
+    public abstract DocumentResponse toResponse(AsDocument document);
 
-    public DocumentUrlResponse toPresignUrlRequest(AsDocument document, String presignedUrl) {
-        if (document == null) {
-            return null;
-        }
+    @Mapping(target = "id", source = "document.id")
+    @Mapping(target = "presignedUrl", source = "presignedUrl")
+    public abstract DocumentUrlResponse toPresignUrlRequest(AsDocument document, String presignedUrl);
 
-        return DocumentUrlResponse.builder()
-            .id(document.getId())
-            .presignedUrl(presignedUrl)
-            .build();
-    }
+    // Add merge method for updating documents
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    public abstract void mergeDocuments(AsDocument source, @MappingTarget AsDocument target);
+
 
 }
